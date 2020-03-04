@@ -61,6 +61,10 @@ numberofbins = args.numberofbins
 linlog = args.linlog
 outputdir = args.outputdir
 
+# If you don't have this IFO in the list of IFOS at __init__.py, add it
+if os.system("grep -q %s %s/gwinc/ifo/__init__.py" % (ifoname, pygwincpath)) != 0:
+    os.system('sed -i "s@^]@\\t\'%s\',\\n]@" %s/gwinc/ifo/__init__.py' % (ifoname, pygwincpath))
+
 #sys.path.insert(1, '/home/dalyag/Documents/Research/GW/High-frequency/gwinc/pygwinc')
 sys.path.insert(1, '%s' % pygwincpath)
 import gwinc
@@ -91,9 +95,15 @@ os.system("sed -i '0,/Power/{s/Power: [0-9]*/Power: %d/}' ifo.yaml" % power)
 os.system("sed -i 's/Transmittance: [0-9]\.[0-9]* #ITM/Transmittance: %f #ITM/' ifo.yaml" % trans)
 
 
-Budget, ifo, freq_, plot_style = gwinc.load_ifo(ifoname)
-ifo = gwinc.precompIFO(freq, ifo)
-traces = Budget(freq, ifo=ifo).calc_trace()
+
+
+#Budget, ifo, freq_, plot_style = gwinc.load_ifo(ifoname)
+#ifo = gwinc.precompIFO(freq, ifo)
+#traces = Budget(freq, ifo=ifo).calc_trace()
+
+Budget = gwinc.load_budget(ifoname)
+traces = Budget(freq).run()
+
 
 # Save the spectrum
 os.chdir(outputdir)
