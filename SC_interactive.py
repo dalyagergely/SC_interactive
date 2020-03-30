@@ -29,14 +29,17 @@ import glob
 
 freq = np.logspace(1, 4, 10000)
 
-Budget_aL, ifo_aL, freq_, plot_style = gwinc.load_ifo('aLIGO')
-ifo_aL = gwinc.precompIFO(freq, ifo_aL)
-traces_aL = Budget_aL(freq, ifo=ifo_aL).calc_trace()
+#Budget_aL, ifo_aL, freq_, plot_style = gwinc.load_ifo('aLIGO')
+#ifo_aL = gwinc.precompIFO(freq, ifo_aL)
+#traces_aL = Budget_aL(freq, ifo=ifo_aL).calc_trace()
+Budget_aL = gwinc.load_budget('aLIGO')
+traces_aL = Budget_aL(freq).run()
 
-#Budgett, ifo, freq_, plot_style = gwinc.load_ifo('Eotvos')
-Budget, ifo, freq_, plot_style = gwinc.load_ifo('Eotvos')
-ifo = gwinc.precompIFO(freq, ifo)
-traces = Budget(freq, ifo=ifo).calc_trace()
+#Budget, ifo, freq_, plot_style = gwinc.load_ifo('Eotvos')
+#ifo = gwinc.precompIFO(freq, ifo)
+#traces = Budget(freq, ifo=ifo).calc_trace()
+Budget = gwinc.load_budget('Eotvos')
+traces = Budget(freq).run()
 
 # ifodir = "/home/dalyag/Documents/Research/GW/High-frequency/gwinc/pygwinc/gwinc/ifo/Eotvos"
 ifodir = '/home/dalyag/Documents/Research/GW/High-frequency/gwinc/pygwinc/gwinc/ifo/Eotvos'
@@ -198,11 +201,13 @@ def update_data(attrname, old, new):
     os.system("sed -i '0,/Length/{s/Length: [0-9]*/Length: %d/}' ifo.yaml" % L)
     os.system("sed -i '0,/Wavelength/{s/Wavelength: [0-9]*\.[0-9]*/Wavelength: %f/}' ifo.yaml" % lam)
     os.system("sed -i '0,/Power/{s/Power: [0-9]*/Power: %d/}' ifo.yaml" % P)
-    os.system("sed -i 's/Transmittance: [0-9]\.[0-9]* #ITM/Transmittance: %f #ITM/' ifo.yaml" % t)
+    os.system("sed -i '252s/Transmittance: [0-9]\.[0-9]*/Transmittance: %f/' ifo.yaml" % t)
     
-    Budget, ifo, freq_, plot_style = gwinc.load_ifo('Eotvos')
-    ifo = gwinc.precompIFO(freq, ifo)
-    traces = Budget(freq, ifo=ifo).calc_trace()
+    #Budget, ifo, freq_, plot_style = gwinc.load_ifo('Eotvos')
+    #ifo = gwinc.precompIFO(freq, ifo)
+    #traces = Budget(freq, ifo=ifo).calc_trace()
+    Budget = gwinc.load_budget('Eotvos')
+    traces = Budget(freq).run()
     y_tot = np.sqrt(traces["Total"][0])
     y_qua = np.sqrt(traces["QuantumVacuum"][0])
     y_sei = np.sqrt(traces["Seismic"][0])

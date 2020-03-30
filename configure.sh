@@ -22,4 +22,6 @@ sed -i "s@Budget, ifo,.*@Budget, ifo, freq_, plot_style = gwinc.load_ifo('$name'
 sed -i "s@^class.*@class $name(nb.Budget):@" $pygwinc/gwinc/ifo/$name/__init__.py
 sed -i "s@Advanced LIGO@$name@" $pygwinc/gwinc/ifo/$name/__init__.py
 
+sed -i "s@^]@\\t\'$name\',\\n]@" $pygwinc/gwinc/ifo/__init__.py"
+
 echo "Done!"

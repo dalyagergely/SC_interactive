@@ -92,7 +92,7 @@ os.chdir('%s/gwinc/ifo/%s' % (pygwincpath, ifoname))
 os.system("sed -i '0,/Length/{s/Length: [0-9]*/Length: %d/}' ifo.yaml" % length)
 os.system("sed -i '0,/Wavelength/{s/Wavelength: [0-9]*\.[0-9]*/Wavelength: %f/}' ifo.yaml" % wavelength)
 os.system("sed -i '0,/Power/{s/Power: [0-9]*/Power: %d/}' ifo.yaml" % power)
-os.system("sed -i 's/Transmittance: [0-9]\.[0-9]* #ITM/Transmittance: %f #ITM/' ifo.yaml" % trans)
+os.system("sed -i '252s/Transmittance: [0-9]\.[0-9]*/Transmittance: %f/' ifo.yaml" % trans)
 
 
 
