@@ -38,11 +38,11 @@ traces_aL = Budget_aL(freq).run()
 #Budget, ifo, freq_, plot_style = gwinc.load_ifo('Eotvos')
 #ifo = gwinc.precompIFO(freq, ifo)
 #traces = Budget(freq, ifo=ifo).calc_trace()
-Budget = gwinc.load_budget('Eotvos')
+Budget = gwinc.load_budget('UjDetektor')
 traces = Budget(freq).run()
 
 # ifodir = "/home/dalyag/Documents/Research/GW/High-frequency/gwinc/pygwinc/gwinc/ifo/Eotvos"
-ifodir = '/home/dalyag/Documents/Research/GW/High-frequency/gwinc/pygwinc/gwinc/ifo/Eotvos'
+ifodir = '/home/dalyag/Documents/Research/GW/High-frequency/gwinc/pygwinc/gwinc/ifo/UjDetektor'
 
 x = np.logspace(1, 4, 10000)
 y_tot = np.sqrt(traces["Total"][0])
@@ -146,7 +146,10 @@ armlength = Slider(title="Arm length (m)", value=4000, start=100, end=5000, step
 wavelength = Slider(title="Laser wavelength (micrometer)", value=1.064, start=0.1, end=10, step=0.5, callback_policy="mouseup")
 power = Slider(title="Laser power (W)", value=125, start=100, end=2000, step=100, callback_policy="mouseup")
 trans = Slider(title="ITM transmittance", value=0.014, start=0, end=1, step=0.05, callback_policy="mouseup")
-
+sqzamp = Slider(title="Squeezing amplitude (dB)", value=12, start=0, end=100, step=5, callback_policy="mouseup")
+sqzang = Slider(title="Squeeze phase (rad)", value=0.00, start=-6.28, end=6.28, step=0.5, callback_policy="mouseup")
+sqzlength = Slider(title="Squeezing cavity length (m)", value=300, start=0, end=1000, step=100, callback_policy="mouseup")
+sqzdet = Slider(title="Detuning (Hz)", value=-45.78, start=-100.78, end=100.78, step=5, callback_policy="mouseup")
 
 callback = CustomJS(code=code, args={})        
 
@@ -168,7 +171,7 @@ def totalnoise_handler_aL(self):
         l_aL.visible = True
         
 def save(self):
-    filename = 'sensitivity_curve_' + str(armlength.value) + '_' + str(wavelength.value) + '_' + str(power.value) + '_' + str(trans.value)
+    filename = 'sensitivity_curve_' + str(armlength.value) + '_' + str(wavelength.value) + '_' + str(power.value) + '_' + str(trans.value) + '_' + str(sqzamp.value) + '_' + str(sqzang.value) + '_' + str(sqzlength.value) + '_' + str(sqzdet.value)
     with open(filename, 'a') as f:
         for i, j in zip(np.logspace(1, 4, 10000), np.sqrt(traces["Total"][0])):
             #print(i, j)
@@ -194,6 +197,10 @@ def update_data(attrname, old, new):
     lam = wavelength.value
     P = power.value
     t = trans.value
+    sa = sqzamp.value
+    sphi = sqzang.value
+    sl = sqzlength.value
+    sd = sqzdet.value
 
     # Generate the new curve
     x = np.logspace(1, 4, 10000)
@@ -202,11 +209,15 @@ def update_data(attrname, old, new):
     os.system("sed -i '0,/Wavelength/{s/Wavelength: [0-9]*\.[0-9]*/Wavelength: %f/}' ifo.yaml" % lam)
     os.system("sed -i '0,/Power/{s/Power: [0-9]*/Power: %d/}' ifo.yaml" % P)
     os.system("sed -i '252s/Transmittance: [0-9]\.[0-9]*/Transmittance: %f/' ifo.yaml" % t)
+    os.system("sed -i '0,/AmplitudedB/{s/AmplitudedB: [0-9]*/AmplitudedB: %d/}' ifo.yaml" % sa)
+    os.system("sed -i '283s/SQZAngle: [0-9]\.[0-9]*/SQZAngle: %f/' ifo.yaml" % sphi)
+    os.system("sed -i '288s/L: [0-9]*/L: %d/' ifo.yaml" % sl)
+    os.system("sed -i '292s/fdetune: -*[0-9]*\.[0-9]*/fdetune: %f/' ifo.yaml" % sd)
     
     #Budget, ifo, freq_, plot_style = gwinc.load_ifo('Eotvos')
     #ifo = gwinc.precompIFO(freq, ifo)
     #traces = Budget(freq, ifo=ifo).calc_trace()
-    Budget = gwinc.load_budget('Eotvos')
+    Budget = gwinc.load_budget('UjDetektor')
     traces = Budget(freq).run()
     y_tot = np.sqrt(traces["Total"][0])
     y_qua = np.sqrt(traces["QuantumVacuum"][0])
@@ -221,12 +232,12 @@ def update_data(attrname, old, new):
 
     source.data = dict(x=x, y_tot=y_tot, y_qua=y_qua, y_sei=y_sei, y_new=y_new, y_sth=y_sth, y_cbr=y_cbr, y_cto=y_cto, y_sbr=y_sbr, y_ste=y_ste, y_exg=y_exg, y_aL=y_aL)
 
-for w in [armlength, wavelength, power, trans]:
+for w in [armlength, wavelength, power, trans, sqzamp, sqzang, sqzlength, sqzdet]:
     w.on_change('value', update_data)
 
 
 # Set up layouts and add to document
-inputs = column(armlength, wavelength, power, trans, toggle, toggle_aL, toggle_save, checkbox)
+inputs = column(armlength, wavelength, power, trans, sqzamp, sqzang, sqzlength, sqzdet, toggle, toggle_aL, toggle_save, checkbox)
 
 curdoc().add_root(row(inputs, plot, width=800))
 curdoc().title = "GW IFO noise budget"
