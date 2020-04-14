@@ -38,11 +38,11 @@ traces_aL = Budget_aL(freq).run()
 #Budget, ifo, freq_, plot_style = gwinc.load_ifo('Eotvos')
 #ifo = gwinc.precompIFO(freq, ifo)
 #traces = Budget(freq, ifo=ifo).calc_trace()
-Budget = gwinc.load_budget('UjDetektor')
+Budget = gwinc.load_budget('Eotvos')
 traces = Budget(freq).run()
 
 # ifodir = "/home/dalyag/Documents/Research/GW/High-frequency/gwinc/pygwinc/gwinc/ifo/Eotvos"
-ifodir = '/home/dalyag/Documents/Research/GW/High-frequency/gwinc/pygwinc/gwinc/ifo/UjDetektor'
+ifodir = '/home/dalyag/Documents/Research/GW/High-frequency/gwinc/pygwinc/gwinc/ifo/Eotvos'
 
 x = np.logspace(1, 4, 10000)
 y_tot = np.sqrt(traces["Total"][0])
@@ -217,7 +217,7 @@ def update_data(attrname, old, new):
     #Budget, ifo, freq_, plot_style = gwinc.load_ifo('Eotvos')
     #ifo = gwinc.precompIFO(freq, ifo)
     #traces = Budget(freq, ifo=ifo).calc_trace()
-    Budget = gwinc.load_budget('UjDetektor')
+    Budget = gwinc.load_budget('Eotvos')
     traces = Budget(freq).run()
     y_tot = np.sqrt(traces["Total"][0])
     y_qua = np.sqrt(traces["QuantumVacuum"][0])

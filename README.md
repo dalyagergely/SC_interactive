@@ -8,6 +8,10 @@ The aim of this project is to provide a quick, easy and interactive tool to visu
  - `Laser wavelength`
  - `Laser power`
  - `ITM transmittance`
+ - `Squeezing amplitude`
+ - `Squeezing phase`
+ - `Squeezing cavity length`
+ - `Squeezer detuning`
 
 ## Usage
 
@@ -47,6 +51,10 @@ where NameOfYourDetector is the name you have specified during the configuration
 | `-w, --wavelength` | FLOAT | Laser wavelength | nm | 1.064 |
 | `-p, --power` | INT | Laser power | W | 125 |
 | `-t, --transmittance` | FLOAT | ITM transmittance |  | 0.014 |
+| `--sa` | INT | Squeezing amplitude | dB | 10 |
+| `--sp` | FLOAT | Squeezing phase | rad | 0.0 |
+| `--sl` | INT | Squeezing cavity length | m | 300 |
+| `--sd` | FLOAT | Squeezer detuning | Hz | -45 |
 | `--f0` | FLOAT | Start frequency | Hz | 1 |
 | `--f1` | FLOAT | End frequency | Hz | 10,000 |
 | `-n, --numberofbins` | INT | Number of frequency bins |  | 10,000 |
@@ -59,6 +67,7 @@ python SC_simple.py --pygwinc /home/dalyag/Documents/Research/GW/High-frequency/
                     --ifo MyInterferometer \
                     -l 3000 \
                     -p 500 \
+                    --sa 12 \
                     --linlog log
 ~~~~
 
